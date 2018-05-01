@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace GiftShop_DS
 {
-    public class Class1
+    public class Store
     {
+
     }
 }
