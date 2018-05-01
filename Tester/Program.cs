@@ -14,12 +14,21 @@ namespace Tester
 
             Tree<int> tree = new Tree<int>();
 
-            for (int i = 10; i < 23; i++)
+            /*for (int i = 10; i < 23; i++)
             {
                 tree.Insert(i);
+            }*/
+            tree.Insert(10);
+            tree.Insert(21);
+            tree.Insert(43);
+
+            /*IEnumerable<int> nodes = tree.Inorder();
+
+            foreach (var item in nodes)
+            {
+                Console.WriteLine(item);
             }
-
-
+            */
         }
     }
 }

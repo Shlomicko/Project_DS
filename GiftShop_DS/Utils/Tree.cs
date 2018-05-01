@@ -10,6 +10,8 @@ namespace GiftShop_DS.Utils
     {
 
         private INodeWithTree<T> _Root;
+        private ICollection<T> _InOrderNodes = new List<T>();
+
 
         public void Insert(T data)
         {
@@ -19,11 +21,11 @@ namespace GiftShop_DS.Utils
             }
             else
             {
-                Insert(data, _Root);
+                Insert(data, ref _Root);
             }
         }
 
-        private void Insert(T newData, INodeWithTree<T> node)
+        private void Insert(T newData, ref INodeWithTree<T> node)
         {
             if (node == null)
             {
@@ -32,40 +34,37 @@ namespace GiftShop_DS.Utils
 
             if (node.Data.CompareTo(newData) > 0)
             {
-                Insert(newData, node.Left);
+                Insert(newData, ref node.Left);
             }
-            else if (node.Data.CompareTo(newData) < -0)
+            else if (node.Data.CompareTo(newData) < 0)
             {
-                Insert(newData, node);
+                Insert(newData, ref node);
             }
 
         }
 
-        private ICollection<T> _InOrderNodes = new List<T>();
-
-        public IEnumerable<T> Inorder(INodeWithTree<T> _Root)
+        public IEnumerable<T> Inorder()
         {
+            return Inorder(_Root);
+        }
 
-            if (_Root != null)
+        private IEnumerable<T> Inorder(INodeWithTree<T> node)
+        {
+            if (node == null)
             {
-
-                Inorder(_Root.Left);
-                
-                _InOrderNodes.Add(_Root.Data);
-                
-               return Inorder(_Root.Right);
-
+                return null;
             }
             else
             {
-                return _InOrderNodes;
+
+                Inorder(node.Left);
+
+                _InOrderNodes.Add(node.Data);
+
+                Inorder(node.Right);
+
             }
-
+            return _InOrderNodes;
         }
-
-
-
-
-
     }
 }
