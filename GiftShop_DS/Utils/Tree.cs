@@ -9,7 +9,7 @@ namespace GiftShop_DS.Utils
     public class Tree<T> where T : IComparable<T>
     {
 
-        private INodeWithTree<T> _Root;
+        private Node<T> _Root;
         private ICollection<T> _InOrderNodes = new List<T>();
 
 
@@ -25,7 +25,7 @@ namespace GiftShop_DS.Utils
             }
         }
 
-        private void Insert(T newData, ref INodeWithTree<T> node)
+        private void Insert(T newData, ref Node<T> node)
         {
             if (node == null)
             {
@@ -38,9 +38,33 @@ namespace GiftShop_DS.Utils
             }
             else if (node.Data.CompareTo(newData) < 0)
             {
-                Insert(newData, ref node);
+                Insert(newData, ref node.Right);
             }
+        }
 
+        public void AddItemOfSize(T size)
+        {
+            var node = FindNode(size, _Root);
+            if(node != null)
+            {
+                
+            }
+            else
+            {
+
+            }
+        }
+
+        private Node<T> FindNode(T data, Node<T> node)
+        {
+            if (node == null) return null;
+            int compareResult;
+            while (node != null && (compareResult = node.Data.CompareTo(data)) != 0)
+            {
+                node = compareResult < 0 ? node.Left : node.Right;
+            }
+                
+            return node;
         }
 
         public IEnumerable<T> Inorder()
@@ -48,7 +72,7 @@ namespace GiftShop_DS.Utils
             return Inorder(_Root);
         }
 
-        private IEnumerable<T> Inorder(INodeWithTree<T> node)
+        private IEnumerable<T> Inorder(Node<T> node)
         {
             if (node == null)
             {

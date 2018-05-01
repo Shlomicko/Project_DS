@@ -42,7 +42,6 @@
   <ItemGroup>
     <Compile Include="GiftShop.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\INodeWithTree.cs" />
     <Compile Include="Utils\Node.cs" />
     <Compile Include="Utils\Tree.cs" />
   </ItemGroup>

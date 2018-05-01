@@ -22,13 +22,13 @@ namespace Tester
             tree.Insert(21);
             tree.Insert(43);
 
-            /*IEnumerable<int> nodes = tree.Inorder();
+            IEnumerable<int> nodes = tree.Inorder();
 
             foreach (var item in nodes)
             {
                 Console.WriteLine(item);
             }
-            */
+            Console.ReadLine();
         }
     }
 }
