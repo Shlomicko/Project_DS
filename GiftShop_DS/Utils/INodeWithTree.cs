@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GiftShop_DS.Utils
 {
-    interface INodeWithTree<T> where T : IComparable<T>
+    public interface INodeWithTree<T> where T : IComparable<T>
     {
         Tree<T> NodeTree { get; }
         T Data { get; }

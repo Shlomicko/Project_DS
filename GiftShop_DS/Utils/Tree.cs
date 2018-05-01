@@ -40,5 +40,32 @@ namespace GiftShop_DS.Utils
             }
 
         }
+
+        private ICollection<T> _InOrderNodes = new List<T>();
+
+        public IEnumerable<T> Inorder(INodeWithTree<T> _Root)
+        {
+
+            if (_Root != null)
+            {
+
+                Inorder(_Root.Left);
+                
+                _InOrderNodes.Add(_Root.Data);
+                
+               return Inorder(_Root.Right);
+
+            }
+            else
+            {
+                return _InOrderNodes;
+            }
+
+        }
+
+
+
+
+
     }
 }
