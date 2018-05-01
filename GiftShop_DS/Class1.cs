@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace GiftShop_DS
 {
-    public class Store
+   
+    public static class StoreRepository
     {
-
+        
     }
 }
