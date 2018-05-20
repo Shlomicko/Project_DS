@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GiftShop_DS.Structure
+namespace GiftShop_DS.Model
 {
     internal class TreeWithSubTrees<T> where T : IComparable<T>
     {
 
-        private INode<T> _root;
+        private Node<T> _root;
         private ICollection<T> _inOrderNodes = new List<T>();
         public readonly bool ShouldNodeTreeKeepCount;
-        public BaseNode<T> BaseNode { get; set; }
+        public Node<T> BaseNode { get; set; }
 
         public TreeWithSubTrees(bool shouldNodeTreeKeepCount)
         {
@@ -24,32 +24,32 @@ namespace GiftShop_DS.Structure
 
         }
 
-        /*public void InsertRef(T data)
+        public void Insert(T data)
         {
             if (_root == null)
             {
-                _root = new BaseNode<T>(data);
+                _root = new Node<T>(data);
             }
             else
             {
-                InsertRef(data, ref _root);
+                Insert(data, ref _root);
             }
         }
 
-        private void InsertRef(T newData, ref INode<T> node)
+        private void Insert(T newData, ref Node<T> node)
         {
             if (node == null)
             {
-                node = new BaseNode<T>(newData);
+                node = new Node<T>(newData);
             }
 
             if (node.Data.CompareTo(newData) > 0)
             {
-                InsertRef(newData, ref node.Left);
+                Insert(newData, ref node.Left);
             }
             else if (node.Data.CompareTo(newData) < 0)
             {
-                InsertRef(newData, ref node.Right);
+                Insert(newData, ref node.Right);
             }
             else
             {
@@ -60,91 +60,11 @@ namespace GiftShop_DS.Structure
             }
         }
 
-        public void Insert(T data)
-        {
-            if (_root == null)
-            {
-                _root = new BaseNode<T>(data);
-            }
-            else
-            {
-                Insert(data, _root);
-            }
-        }
-
-        private INode<T> Insert(T newData, INode<T> node)
-        {
-            if (node == null)
-            {
-                node = new BaseNode<T>(newData);
-            }
-
-            if (node.Data.CompareTo(newData) > 0)
-            {
-                return Insert(newData, node.Left);
-            }
-            else if (node.Data.CompareTo(newData) < 0)
-            {
-                return Insert(newData, node.Right);
-            }
-            else
-            {
-                if (ShouldNodeTreeKeepCount)
-                {
-                    node.Count++;                    
-                }
-                return node;
-            }
-        }*/
-
-        public void Insert(T data)
-        {
-            if (_root == null)
-            {
-                _root = new BaseNode<T>(data);
-            }
-            else
-            {
-                Insert(data, _root);
-            }
-        }
-
-        private void Insert(T data, INode<T> node)
-        {
-
-            INode<T> newNode = new BaseNode<T>(data);
-            INode<T> current = node;
-            INode<T> previous = current;
-
-            while (current != null)
-            {
-                if (data.CompareTo(current.Data) < 0)
-                {
-                    previous = current;
-                    current = current.Left;
-                }
-                else if (data.CompareTo(current.Data) > 0)
-                {
-                    previous = current;
-                    current = current.Right;
-                }
-            }
-
-            if (data.CompareTo(previous.Data) < 0)
-            {
-                previous.Left = newNode;
-            }
-            else
-            {
-                previous.Right = newNode;
-            }
-        }
-
-        public INode<T> GetNodeParent(INode<T> childNode)
+        public Node<T> GetNodeParent(Node<T> childNode)
         {
             return GetNodeParent(_root, childNode);
         }
-        private INode<T> GetNodeParent(INode<T> currentRoot, INode<T> childNode)
+        private Node<T> GetNodeParent(Node<T> currentRoot, Node<T> childNode)
         {
             if (childNode == _root || currentRoot == null)
             {
@@ -176,7 +96,7 @@ namespace GiftShop_DS.Structure
             }
         }
 
-        private int CountLeaves(INode<T> node)
+        private int CountLeaves(Node<T> node)
         {
             if (node == null)
             {
@@ -194,7 +114,7 @@ namespace GiftShop_DS.Structure
         }
 
 
-        public bool TryGetNode<INode>(T data, out INode<T> node, bool findClosest = false)
+        public bool TryGetNode(T data, out Node<T> node, bool findClosest = false)
         {
             node = null;
             var nodeToFind = _root;
@@ -223,7 +143,7 @@ namespace GiftShop_DS.Structure
             return nodeToFind != null;
         }
 
-        public void RemoveNode(ref INode<T> node)
+        public void RemoveNode(ref Node<T> node)
         {
             if (node == null) return;
 
@@ -250,7 +170,7 @@ namespace GiftShop_DS.Structure
         }
 
 
-        private T GetMin(INode<T> node)
+        private T GetMin(Node<T> node)
         {
             if (node == null)
             {
@@ -269,7 +189,7 @@ namespace GiftShop_DS.Structure
             return Inorder(_root);
         }
 
-        private IEnumerable<T> Inorder(INode<T> node)
+        private IEnumerable<T> Inorder(Node<T> node)
         {
             if (node == null)
             {

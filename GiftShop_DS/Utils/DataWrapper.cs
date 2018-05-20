@@ -1,4 +1,4 @@
-﻿using GiftShop_DS.Model;
+﻿using GiftShop_DS.Structure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +17,9 @@ namespace GiftShop_DS.Utils
 
         public bool GetItemOfSize(T @base, T height)
         {
-            if (tree.TryGetNode(@base, out Node<T> node))
+            if (tree.TryGetNode<BaseNode<T>>(@base, out INode<T> node))
             {
-                if (node.NodeTree.TryGetNode(height, out Node<T> innerNode, true))
+                if (((BaseNode<T>)node).NodeTree.TryGetNode<HeightNode<T>>(height, out INode<T> innerNode, true))
                 {
 
                     return true;
@@ -30,19 +30,19 @@ namespace GiftShop_DS.Utils
 
         public void AddItemOfSize(T @base, T height)
         {
-            if (tree.TryGetNode(@base, out Node<T> node))
+            if (tree.TryGetNode<BaseNode<T>>(@base, out INode<T> node))
             {
-                node.NodeTree.Insert(height);
+                ((BaseNode<T>)node).NodeTree.Insert(height);
             }
         }
 
         public int CountItemOffSize(T @base, T height)
         {
-            if (tree.TryGetNode(@base, out Node<T> node))
+            if (tree.TryGetNode<BaseNode<T>>(@base, out INode<T> node))
             {
-                if (node.NodeTree.TryGetNode(height, out Node<T> innerNode))
+                if (((BaseNode<T>)node).NodeTree.TryGetNode<HeightNode<T>>(height, out INode<T> innerNode))
                 {
-                    return innerNode.NodeTree.Count;
+                    return ((BaseNode<T>)innerNode).NodeTree.Count;
                 }
             }
             return 0;
@@ -50,7 +50,7 @@ namespace GiftShop_DS.Utils
 
         public bool RemoveBase(T @base)
         {
-            if (tree.TryGetNode(@base, out Node<T> node))
+            if (tree.TryGetNode<BaseNode<T>>(@base, out INode<T> node))
             {
                 tree.RemoveNode(ref node);
                 return true;
