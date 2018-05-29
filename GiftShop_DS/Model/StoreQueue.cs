@@ -1,55 +1,90 @@
-﻿using GiftShop_DS.Structure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
-namespace GiftShop_DS.Model
+namespace GiftShop_DS.Structure
 {
-    class StoreQueue<T>/* where T : IComparable<T>*/
-    {        
-        private QueueNode<T> Head, Tail, Prev;
+    internal class StoreQueue<T> where T : IComparable<T>
+    {
+        private QueueNode<DataQueue> _head, _tail;
+        public int Size { get; private set; }
+
         public StoreQueue()
         {
-            Head = Tail = null;
+            _head = _tail = null;
         }
-        public void Enque(T node)
+
+
+        public void Enqueue(HeightData data)
         {
-            var qNode = new QueueNode<T>(node);
-            if (Prev == null)
+            var qNode = new QueueNode<DataQueue>(new DataQueue(data))
+            {                
+                Next = null
+            };
+            
+            if (_head == null)
             {
-                Head = Tail = qNode;
-            }
-            else if (Head == Tail)
-            {
-                Tail.Previous = qNode;
-                Head = Tail.Previous;
+                _head = _tail = qNode;
+                _head.Previous = null;
             }
             else
             {
-                Head.Previous = qNode;
-                Head = Head.Previous;
+                _tail.Next = qNode;
+                qNode.Previous = _tail;
+                _tail = qNode;
             }
-        }
-        public T Deque()
-        {
-            var val = Tail.Data;
-            Tail = Tail.Previous;
-            return val;
+            Size++;
         }
 
-
-
-        private class QueueNode<TNode> /*where TNode : IComparable<TNode>*/
+        public DataQueue Dequeue()
         {
-            public QueueNode<TNode> Previous;
-            public QueueNode<TNode> Next;
-            public TNode Data;
-            public QueueNode(TNode data)
+            var val = _tail.Data;
+            _tail = _tail.Previous;
+
+            if (_head == null)
             {
-                Data = data;
+                return null;
             }
+            QueueNode<DataQueue> tmp = _head.Next;
+            _head.Next = tmp.Next;
+            tmp.Next.Previous = _head;
+            Size--;
+            return _head.Data;
+        }
+
+        public QueueNode<DataQueue> Remove(QueueNode<DataQueue> node)
+        {
+            if(node.Previous != null)
+            {
+                node.Previous.Next = node.Next;
+            }
+            return node;
+        }
+   
+        public QueueNode<DataQueue> Peek()
+        {
+            return _head;
+        }
+    }
+    internal class QueueNode<T>
+    {
+        public QueueNode<T> Previous;
+        public QueueNode<T> Next;
+        public T Data;
+        public QueueNode(T data)
+        {
+            Data = data;
+        }
+    }
+
+    internal class DataQueue
+    {
+        public Node<WidthData> BaseNode { get; private set; }
+        public HeightData Data { get; private set; }
+        public DateTime InsertionDate { get; private set; }
+        public DataQueue(HeightData data)
+        {
+            Data = data;
+            BaseNode = Data.Base;
+            InsertionDate = DateTime.Now;
         }
     }
 }

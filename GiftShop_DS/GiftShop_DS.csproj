@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GiftShop_DS</RootNamespace>
     <AssemblyName>GiftShop_DS</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,6 +33,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,13 +45,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GiftShop.cs" />
-    <Compile Include="Model\HeightNode.cs" />
-    <Compile Include="Model\INode.cs" />
+    <Compile Include="Model\HeightData.cs" />
+    <Compile Include="Model\Node.cs" />
     <Compile Include="Model\StoreQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Model\BaseNode.cs" />
+    <Compile Include="Model\WidthData.cs" />
     <Compile Include="Model\TreeWithSubTrees.cs" />
-    <Compile Include="Utils\DataWrapper.cs" />
+    <Compile Include="Utils\JobRunner.cs" />
+    <Compile Include="Utils\StorageManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{6d0445af-13fc-4e01-b4aa-5c9afa9b0106}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
