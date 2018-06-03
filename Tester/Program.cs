@@ -11,10 +11,14 @@ namespace Tester
         static void Main(string[] args)
         {
 
-            StorageManager storageManager = new StorageManager();
-            for (int i = 10; i < 23; i++)
+            IStore storageManager = StorageManager.Instance;
+            for (int i = 0; i < 12; i++)
             {
                 storageManager.AddPackage(4, 10);
+            }
+            for (int i = 10; i < 23; i++)
+            {
+                storageManager.AddPackage(i / 2, i);
             }
             //tree.Insert(10);
             //tree.Insert(21);

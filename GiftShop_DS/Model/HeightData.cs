@@ -13,8 +13,12 @@ namespace GiftShop_DS.Structure
         public int Count { get; set; } = 1;
         public QueueNode<DataQueue> QueueNode { get; set; }
         public Node<WidthData> Base { get; set; }
-
-        public HeightData(int data) => Height = data;        
+        public DateTime InsertionDate { get; set; }
+        public HeightData(int data)
+        {
+            Height = data;
+            InsertionDate = DateTime.Now;
+        }
 
         public int CompareTo(HeightData other) => Height.CompareTo(other.Height);        
     }

@@ -5,24 +5,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static GiftShop_DS.InventoryMessageBroadcaster;
 
 namespace GiftShop_DS.Utils
 {
     internal class StorageManager : IStore
     {
         private readonly TreeWithSubTrees<WidthData> tree;
-        private readonly StoreQueue<HeightData> storeQueue;
+        private readonly StoreQueue _storeQueue;
         private readonly int MinimumPackageQuantity;
         private readonly int MaximumPackageQuantity;
-        public StorageManager()
+        private readonly int ExpiretionThreshHoldInMilliseconds = 10000;
+        private ExpirationJobRunner _jobRunner;
+
+        public static IStore Instance { get; private set; } = new StorageManager();
+        private StorageManager()
         {
             tree = new TreeWithSubTrees<WidthData>();
-            storeQueue = new StoreQueue<HeightData>();
+            _storeQueue = new StoreQueue();
             MinimumPackageQuantity = 5;
             MaximumPackageQuantity = 100;
         }
 
-        public bool IssuePackage(int width, int height)
+        private void SetJob()
+        {
+            _jobRunner = new ExpirationJobRunner(_storeQueue)
+            {
+                ExpiretionThreshHoldInMilliseconds = ExpiretionThreshHoldInMilliseconds
+            };
+            _jobRunner.OnJobDone += OnExpired;
+            _jobRunner.Start();
+        }               
+
+        private void OnExpired(object sender, JobDoneArgs e)
+        {
+            _jobRunner.Stop();
+            var dq = e.DataQueue;
+            var parentTree = dq.ParentTree;
+            parentTree.RemoveNode(dq.Data);
+            var hCount = parentTree.Count;
+            if (hCount <= 0)
+            {
+                RemovePackage(dq.BaseNode.Data.Width);
+            }
+            _jobRunner.Start();
+        }
+
+        public bool IssuePackage(int width, int height, int quantity = 1)
         {
             var widthNode = new Node<WidthData>(new WidthData(width));
             if (tree.TryGetNode(ref widthNode))
@@ -31,19 +60,24 @@ namespace GiftShop_DS.Utils
                 if (widthNode.Data.HeightTree.TryGetNode(ref heightNode, true))
                 {
                     var hCount = --heightNode.Data.Count;
-                    if(hCount == 0)
+                    if (hCount == 0)
                     {
                         widthNode.Data.HeightTree.RemoveNode(heightNode.Data);
-                        storeQueue.Remove(heightNode.Data.QueueNode);
+                        _storeQueue.Remove(heightNode.Data.QueueNode);
                     }
-                    if(widthNode.Data.HeightTree.Count == 0)
+                    else if(hCount <= MinimumPackageQuantity)
+                    {
+                        Publish(MessageType.PackageQuanityLow, new Package(width, height));
+                    }
+
+                    if (widthNode.Data.HeightTree.Count == 0)
                     {
                         widthNode.Data.HeightTree.RemoveNode(heightNode.Data);
-                        if(widthNode.Data.HeightTree.Count == 0)
+                        if (widthNode.Data.HeightTree.Count == 0)
                         {
-                            RemovePackage(width: width);                            
+                            RemovePackage(width: width);
                         }
-                    }                    
+                    }
                     return true;
                 }
             }
@@ -56,25 +90,39 @@ namespace GiftShop_DS.Utils
             var heightNode = new Node<HeightData>(new HeightData(height));
             var hData = heightNode.Data;
             if (tree.TryGetNode(ref widthNode))
-            {                
+            {
                 if (widthNode.Data.HeightTree.TryGetNode(node: ref heightNode))
                 {
-                    heightNode.Data.Count++;
-                    storeQueue.Enqueue(storeQueue.Dequeue().Data);
+                    var hCount = heightNode.Data.Count;
+                    var total = hCount + quantity;
+                    if (total > MaximumPackageQuantity)
+                    {
+                        quantity = total - MaximumPackageQuantity;
+                        Publish(MessageType.QuantityOverhead, new Package(width, height), numOffPackagesTooMuch: quantity);
+                    }
+                    heightNode.Data.Count += quantity;
+                    _storeQueue.Enqueue(_storeQueue.Dequeue().Data);
                 }
                 else
-                {
-                    storeQueue.Enqueue(hData);
-                    widthNode.Data.HeightTree.Insert(data: hData);                    
-                }                
+                {                    
+                    if (quantity > MaximumPackageQuantity)
+                    {
+                        
+                        Publish(MessageType.QuantityOverhead, new Package(width, height), numOffPackagesTooMuch: quantity - MaximumPackageQuantity);
+                        quantity = MaximumPackageQuantity;
+                    }
+                    hData.Count = quantity;
+                    _storeQueue.Enqueue(hData);
+                    widthNode.Data.HeightTree.Insert(data: hData);
+                }
             }
             else
-            {                
+            {
                 hData.Base = widthNode;
-                storeQueue.Enqueue(hData);
-                widthNode.Data.HeightTree.Insert(hData);                
+                _storeQueue.Enqueue(hData);
+                widthNode.Data.HeightTree.Insert(hData);
                 tree.Insert(widthNode.Data);
-            }            
+            }
         }
 
         public int CountPackages(int width, int height)
@@ -114,7 +162,17 @@ namespace GiftShop_DS.Utils
             return packages;
         }
 
-        public bool RemovePackage(int width)
+        public void SubscribeToAlertLowQuantityMessages(Action<string, Package> action)
+        {
+            InventoryMessageBroadcaster.SubscribeToQuantityToLow(action);
+        }
+
+        public void SubscribeToQuantityOverheadMessages(Action<string, Package> action)
+        {
+            InventoryMessageBroadcaster.SubscribeToQuantityOverhead(action);
+        }
+
+        private bool RemovePackage(int width)
         {
             var widthNode = new Node<WidthData>(new WidthData(width));
             if (tree.TryGetNode(ref widthNode))
@@ -123,6 +181,6 @@ namespace GiftShop_DS.Utils
                 return true;
             }
             return false;
-        }                 
+        }
     }
 }

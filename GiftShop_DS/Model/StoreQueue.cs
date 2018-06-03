@@ -2,66 +2,106 @@
 
 namespace GiftShop_DS.Structure
 {
-    internal class StoreQueue<T> where T : IComparable<T>
+    internal class StoreQueue
     {
-        private QueueNode<DataQueue> _head, _tail;
+        private QueueNode<DataQueue> _first, _last;
         public int Size { get; private set; }
 
         public StoreQueue()
         {
-            _head = _tail = null;
+            _first = _last = null;
         }
 
 
         public void Enqueue(HeightData data)
         {
-            var qNode = new QueueNode<DataQueue>(new DataQueue(data))
-            {                
-                Next = null
-            };
-            
-            if (_head == null)
+            /*var qNode = new QueueNode<DataQueue>(new DataQueue(data))
             {
-                _head = _tail = qNode;
-                _head.Previous = null;
+                Next = _first
+            };
+
+            if (_first == null)
+            {
+                _first = _last = qNode;
+                _first.Previous = null;
             }
             else
             {
-                _tail.Next = qNode;
-                qNode.Previous = _tail;
-                _tail = qNode;
+                _first = qNode;
+                _last.Next = qNode;
+                qNode.Previous = _last;
+                _last = qNode;
+            }
+            _first = qNode;*/
+
+            var dq = new DataQueue(data);
+            
+            var newFirst = new QueueNode<DataQueue>(dq)
+            {
+                Next = null,                    
+            };
+            dq.Data.QueueNode = newFirst;
+            if (_first != null)
+            {
+                newFirst.Next = _first;
+                _first.Previous = newFirst;
+            }
+
+            _first = newFirst;
+            if (_last == null)
+            {
+                _last = _first;
             }
             Size++;
         }
 
         public DataQueue Dequeue()
         {
-            var val = _tail.Data;
-            _tail = _tail.Previous;
+            /*var val = _last.Data;
+            _last = _last.Previous;
 
-            if (_head == null)
+            if (_first == null)
             {
                 return null;
             }
-            QueueNode<DataQueue> tmp = _head.Next;
-            _head.Next = tmp.Next;
-            tmp.Next.Previous = _head;
+            QueueNode<DataQueue> tmp = _first.Next;
+            _first.Next = tmp.Next;
+            tmp.Next.Previous = _first;*/
+
+            var oldFirst = _first;
+            _first = _first.Next;
+
+            if (_first == null)
+            {
+                _last = null;
+            }
+            else
+            {
+                _first.Previous = null;
+            }
+
+
             Size--;
-            return _head.Data;
+            return oldFirst.Data;
         }
 
         public QueueNode<DataQueue> Remove(QueueNode<DataQueue> node)
         {
-            if(node.Previous != null)
+            if (node.Previous != null)
             {
                 node.Previous.Next = node.Next;
             }
             return node;
         }
-   
+
         public QueueNode<DataQueue> Peek()
         {
-            return _head;
+            return _first;
+        }
+
+        public bool IsEmpty()
+        {
+            return _first == null;
         }
     }
     internal class QueueNode<T>
@@ -79,12 +119,19 @@ namespace GiftShop_DS.Structure
     {
         public Node<WidthData> BaseNode { get; private set; }
         public HeightData Data { get; private set; }
-        public DateTime InsertionDate { get; private set; }
         public DataQueue(HeightData data)
         {
-            Data = data;
+            Data = data;            
             BaseNode = Data.Base;
-            InsertionDate = DateTime.Now;
         }
+        public TreeWithSubTrees<HeightData> ParentTree
+        {
+            get
+            {
+                return BaseNode.Data.HeightTree;
+            }
+
+        }
+
     }
 }

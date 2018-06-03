@@ -9,9 +9,10 @@ namespace Common
     public interface IStore
     {
         List<Package> GetPackages();
-        bool IssuePackage(int width, int height);
+        bool IssuePackage(int width, int height, int quantity = 1);
         void AddPackage(int width, int height, int quantity = 1);
         int CountPackages(int width, int height);
-        bool RemovePackage(int width);
+        void SubscribeToAlertLowQuantityMessages(Action<string, Package> action);
+        void SubscribeToQuantityOverheadMessages(Action<string, Package> action);        
     }
 }
