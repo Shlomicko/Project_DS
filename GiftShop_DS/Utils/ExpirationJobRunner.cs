@@ -8,10 +8,8 @@ namespace GiftShop_DS.Utils
     {
 
         public event EventHandler<JobDoneArgs> OnJobDone;
-        private StoreQueue _queue;        
-        private Predicate<DataQueue> _predicate;
-        private Action _action;
-        public int ExpiretionThreshHoldInMilliseconds{ get; set; }
+        private StoreQueue _queue;                
+        public int? ExpiretionThreshHoldInMilliseconds{ get; set; }
 
         public ExpirationJobRunner(StoreQueue queue):base()
         {

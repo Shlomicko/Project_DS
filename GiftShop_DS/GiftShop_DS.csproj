@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="GiftShop.cs" />
     <Compile Include="InventoryMessageBroadcaster.cs" />
+    <Compile Include="Utils\StorageConfiguration.cs" />
     <Compile Include="Model\HeightData.cs" />
     <Compile Include="Model\Node.cs" />
     <Compile Include="Model\StoreQueue.cs" />

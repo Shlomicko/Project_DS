@@ -24,7 +24,7 @@ namespace Tester
             //tree.Insert(21);
             //tree.Insert(43);
             //Console.WriteLine("1,2: " + 1.CompareTo(2));
-            IEnumerable<Package> nodes = storageManager.GetPackages();
+            IDictionary<int, Package> nodes = storageManager.GetPackages();
             var hCount = storageManager.CountPackages(4, 10);
             for (int i = 0; i < hCount; i++)
             {
