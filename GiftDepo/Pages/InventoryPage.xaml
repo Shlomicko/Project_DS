@@ -6,33 +6,36 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:GiftDepo.Pages" 
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
-    mc:Ignorable="d" 
+    mc:Ignorable="d"     
     d:DesignHeight="450" d:DesignWidth="800">
 
-    <DataGrid Margin="0 8 0 0" 
-              ItemsSource="{Binding Packages.Values}" CanUserSortColumns="True" 
-              CanUserAddRows="False" AutoGenerateColumns="False"             
+    <materialDesign:Card  materialDesign:ShadowAssist.ShadowDepth="Depth3" Height="Auto" Padding="32" Margin="20 20 20 20">
+
+        <DataGrid Name="PackagesGridView" DockPanel.Dock="Top" Height="Auto"
+              ItemsSource="{Binding Packages, UpdateSourceTrigger=PropertyChanged}" CanUserSortColumns="True" 
+              CanUserAddRows="False" AutoGenerateColumns="False"              
               materialDesign:DataGridAssist.CellPadding="13 8 8 8" 
               materialDesign:DataGridAssist.ColumnHeaderPadding="8">
-        <DataGrid.Columns>
+            <DataGrid.Columns>
 
-            <materialDesign:MaterialDataGridTextColumn Binding="{Binding Width}" Header="Base" 
+                <materialDesign:MaterialDataGridTextColumn Binding="{Binding Width}" Header="Base" 
                                                        />
-            <!-- set a max length to get an indicator in the editor -->
-            <materialDesign:MaterialDataGridTextColumn Binding="{Binding Height}" Header="Height" 
+                <!-- set a max length to get an indicator in the editor -->
+                <materialDesign:MaterialDataGridTextColumn Binding="{Binding Height}" Header="Height" 
                                                        MaxLength="255" />
-            <materialDesign:MaterialDataGridTextColumn Binding="{Binding Count}" Header="Quantity"/>
-            <!-- use custom combo box column to get better combos. Use ItemsSourceBinding as your binding template to be applied to each combo -->
-            <materialDesign:MaterialDataGridTextColumn Header="Date Added" Binding="{Binding DateAdded, StringFormat=d}" 
+                <materialDesign:MaterialDataGridTextColumn Binding="{Binding Count}" Header="Quantity"/>
+                <!-- use custom combo box column to get better combos. Use ItemsSourceBinding as your binding template to be applied to each combo -->
+                <materialDesign:MaterialDataGridTextColumn Header="Date Added" Binding="{Binding DateAdded, StringFormat=d}" 
                                                        SortMemberPath="DateAdded"/>
-            <DataGridTemplateColumn>
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <Button Click="OnClickToManagePackage">Manage</Button>
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-        </DataGrid.Columns>
-    </DataGrid>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="OnClickToManagePackage" DataContext="{Binding}">Manage</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </materialDesign:Card>
 </UserControl>
  

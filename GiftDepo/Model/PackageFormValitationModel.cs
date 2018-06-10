@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel;
 
-namespace GiftDepo.ModelView
+namespace GiftDepo.Model
 {
-    public class AddPackageValitationModel : INotifyPropertyChanged
-    {
+    public class PackageFormValitationModel : BaseViewModel
+    {        
         private int _width;
         private int _height;
         private bool _hasNoErrors = false;
+        private int _quantity = 1;
 
+        
         public int Width
         {
             get
@@ -55,12 +57,21 @@ namespace GiftDepo.ModelView
                 }
             }
         }
-        
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        private void RaisePropertyChanged(string propName)
+        public int Quantity
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-        }        
+            get
+            {
+                return _quantity;
+            }
+            set
+            {
+                if (_quantity != value)
+                {
+                    _quantity = value;
+                    RaisePropertyChanged("Quantity");
+                }
+            }
+        }
     }
 }

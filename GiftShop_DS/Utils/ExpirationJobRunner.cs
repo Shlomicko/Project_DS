@@ -9,7 +9,8 @@ namespace GiftShop_DS.Utils
 
         public event EventHandler<JobDoneArgs> OnJobDone;
         private StoreQueue _queue;                
-        public int? ExpiretionThreshHoldInMilliseconds{ get; set; }
+        public double? ExpiretionThreshHoldInMilliseconds { get; set; }
+        
 
         public ExpirationJobRunner(StoreQueue queue):base()
         {
@@ -21,10 +22,10 @@ namespace GiftShop_DS.Utils
             var head = _queue.Peek();
             if(head != null)
             {
-                var diff = DateTime.Now.Subtract(head.Data.Data.InsertionDate).Milliseconds;
-                if (diff < ExpiretionThreshHoldInMilliseconds)
+                var diff = DateTime.Now.Subtract(head.Data.Data.InsertionDate).TotalMilliseconds;
+                if (diff > ExpiretionThreshHoldInMilliseconds)
                 {
-                    JobDoneArgs args = new JobDoneArgs(head.Data);
+                    JobDoneArgs args = new JobDoneArgs(_queue.Dequeue());
                     OnJobDone?.Invoke(this, args);
                 }
             }

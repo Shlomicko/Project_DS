@@ -62,12 +62,23 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\ApplicationCommand.cs" />
-    <Compile Include="Dialogs\AddPackageDialog.xaml.cs">
-      <DependentUpon>AddPackageDialog.xaml</DependentUpon>
+    <Compile Include="Dialogs\ManagePackageControl.xaml.cs">
+      <DependentUpon>ManagePackageControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ModelView\AddPackageValitationModel.cs" />
+    <Compile Include="Dialogs\PackageForm.xaml.cs">
+      <DependentUpon>PackageForm.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Model\PackageFormValitationModel.cs" />
+    <Compile Include="Model\BaseViewModel.cs" />
+    <Compile Include="Pages\IssuePackagePage.xaml.cs">
+      <DependentUpon>IssuePackagePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Validators\NotEmptyValidationRule.cs" />
-    <Page Include="Dialogs\AddPackageDialog.xaml">
+    <Page Include="Dialogs\ManagePackageControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\PackageForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -91,9 +102,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\IssuePackagePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModelView\InventoryModel.cs" />
+    <Compile Include="Model\InventoryModel.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>

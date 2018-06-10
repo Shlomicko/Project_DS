@@ -23,6 +23,11 @@ namespace Common
         {            
             DateAdded = time;
         }
+
+        public Package(int width, int height, DateTime time, int quantity) : this(width, height, time)
+        {
+            Count = quantity; ;
+        }
         public int Width { get; set; }
         public int Height { get; set; }
         public DateTime DateAdded { get; set; } = DateTime.Now;

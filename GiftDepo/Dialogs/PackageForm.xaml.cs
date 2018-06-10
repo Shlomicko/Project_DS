@@ -1,4 +1,4 @@
-﻿using GiftDepo.ModelView;
+﻿using GiftDepo.Model;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 
@@ -7,9 +7,9 @@ namespace GiftDepo.Dialogs
     /// <summary>
     /// Interaction logic for AddPackageDialog.xaml
     /// </summary>
-    public partial class AddPackageDialog : UserControl
+    public partial class PackageForm : UserControl
     {
-        public AddPackageDialog()
+        public PackageForm()
         {
             InitializeComponent();
         }
@@ -26,7 +26,7 @@ namespace GiftDepo.Dialogs
             {
                 ValidationErrors.Remove(1);
             }
-            ((AddPackageValitationModel)DataContext).HasNoErrors = (ValidationErrors.Count == 0);
+            ((PackageFormValitationModel)DataContext).HasNoErrors = (ValidationErrors.Count == 0);
         }
 
     }

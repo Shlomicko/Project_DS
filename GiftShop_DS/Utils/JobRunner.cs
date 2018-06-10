@@ -6,6 +6,7 @@ namespace GiftShop_DS.Utils
     {
 
         private readonly Timer _timer;
+        private double _interval = 10000;
 
         public JobRunner()
         {
@@ -23,7 +24,20 @@ namespace GiftShop_DS.Utils
         {
             DoJob();
         }
-
+        
+        protected double Interval
+        {
+            get
+            {
+                return _interval;
+            }
+            set
+            {
+                _interval = value;
+                _timer.Interval = _interval;
+            }
+            
+        }
         protected abstract void DoJob();
 
     }

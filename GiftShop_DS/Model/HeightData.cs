@@ -10,7 +10,7 @@ namespace GiftShop_DS.Structure
     {
 
         public int Height { get; set; }
-        public int Count { get; set; } = 1;
+        public int Count { get; set; } = 0;
         public QueueNode<DataQueue> QueueNode { get; set; }
         public Node<WidthData> Base { get; set; }
         public DateTime InsertionDate { get; set; }

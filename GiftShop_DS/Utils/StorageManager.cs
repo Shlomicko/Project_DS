@@ -2,7 +2,9 @@
 using GiftShop_DS.Structure;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
+using System.Threading.Tasks;
 using static GiftShop_DS.InventoryMessageBroadcaster;
 using static GiftShop_DS.Utils.StorageConfiguration;
 
@@ -17,6 +19,7 @@ namespace GiftShop_DS.Utils
         public event EventHandler<IInventoryChangeEventArgs> OnInventoryChange;
 
         public static IStore Instance { get; private set; } = new StorageManager();
+
         private StorageManager()
         {
 
@@ -55,11 +58,13 @@ namespace GiftShop_DS.Utils
             var parentTree = dq.ParentTree;
             parentTree.RemoveNode(dq.Data);
             var hCount = parentTree.Count;
-            if (hCount <= 0)
+            if (hCount == 0)
             {
-                RemovePackage(dq.BaseNode.Data.Width);
+                var width = dq.BaseNode.Data.Width;
+                var height = dq.Data.Height;
+                RemovePackage(width);
             }
-            _jobRunner.Start();
+            _jobRunner.Start();            
         }
 
         public bool IssuePackage(int width, int height, int quantity = 1)
@@ -74,22 +79,14 @@ namespace GiftShop_DS.Utils
                     --hCount;
                     if (hCount == 0)
                     {
-                        widthNode.Data.HeightTree.RemoveNode(heightNode.Data);
+                        RemovePackage(width, height);                        
                         _storeQueue.Remove(heightNode.Data.QueueNode);
                     }
                     else if (hCount <= MinimumPackageQuantity)
                     {
                         Publish(MessageType.PackageQuanityLow, new Package(width, height));
                     }
-
-                    if (widthNode.Data.HeightTree.Count == 0)
-                    {
-                        widthNode.Data.HeightTree.RemoveNode(heightNode.Data);
-                        if (widthNode.Data.HeightTree.Count == 0)
-                        {
-                            RemovePackage(width: width);                            
-                        }
-                    }
+                    
                     var pkg = new Package()
                     {
                         Count = hCount,
@@ -109,30 +106,16 @@ namespace GiftShop_DS.Utils
             var widthNode = new Node<WidthData>(new WidthData(width));
             var heightNode = new Node<HeightData>(new HeightData(height));
             var hData = heightNode.Data;
-            
+
             if (tree.TryGetNode(ref widthNode))
             {
                 if (widthNode.Data.HeightTree.TryGetNode(node: ref heightNode))
                 {
-                    int hCount = heightNode.Data.Count;
-                    var total = hCount + quantity;
-                    if (total > MaximumPackageQuantity)
-                    {
-                        quantity = total - MaximumPackageQuantity;
-                        Publish(MessageType.QuantityOverhead, new Package(width, height), numOffPackagesTooMuch: quantity);
-                    }
-                    heightNode.Data.Count += quantity;
+                    hData = heightNode.Data;
                     _storeQueue.Enqueue(_storeQueue.Dequeue().Data);
                 }
                 else
                 {
-                    if (quantity > MaximumPackageQuantity)
-                    {
-
-                        Publish(MessageType.QuantityOverhead, new Package(width, height), numOffPackagesTooMuch: quantity - MaximumPackageQuantity);
-                        quantity = MaximumPackageQuantity;
-                    }
-                    hData.Count = quantity;
                     _storeQueue.Enqueue(hData);
                     widthNode.Data.HeightTree.Insert(data: hData);
                 }
@@ -152,7 +135,26 @@ namespace GiftShop_DS.Utils
                 Height = height
             };
 
+            hData.Count = GetRightAmountAndPublishMessage(currentPackageCount: hData.Count,
+                    amountToAdd: quantity,
+                    package: pkg);
+
+            pkg.Count = hData.Count;
+
             OnInventoryChange?.Invoke(this, new InventoryChangeEventArgs(pkg));
+        }
+
+        private int GetRightAmountAndPublishMessage(int currentPackageCount, int amountToAdd, Package package)
+        {
+            int total = currentPackageCount + amountToAdd;
+            if (total > MaximumPackageQuantity)
+            {
+                var change = total - MaximumPackageQuantity;
+                total = amountToAdd - change;
+                total += currentPackageCount;
+                Publish(MessageType.QuantityOverhead, package, numOffPackagesTooMuch: change);
+            }
+            return total;
         }
 
         public int CountPackages(int width, int height)
@@ -169,13 +171,9 @@ namespace GiftShop_DS.Utils
             return 0;
         }
 
-        public Dictionary<int, Package> GetPackages()
+        public ICollection<Package> GetPackages()
         {
-            Dictionary<int, Package> packages = new Dictionary<int, Package>();
-            packages.Add(2, new Package(2, 10, DateTime.Now.AddMonths(4)));
-            packages.Add(6, new Package(6, 2, DateTime.Now.AddMonths(-8)));
-            packages.Add(3, new Package(3, 11, DateTime.Now.AddYears(3)));
-            packages.Add(18, new Package(18, 77, DateTime.Now.AddYears(-4)));
+            List<Package> packages = new List<Package>();
             var bases = tree.Inorder();
             if (bases != null)
             {
@@ -191,13 +189,16 @@ namespace GiftShop_DS.Utils
                             DateAdded = heightItem.InsertionDate,
                             Count = heightItem.Count
                         };
-                        packages.Add(baseItem.Width, package);
+                        if (!packages.Contains(package))
+                        {
+                            packages.Add(package);
+                        }
                     }
                 }
             }
             return packages;
         }
-               
+
         public IStore SetMinimumStock(int min)
         {
             MinimumPackageQuantity = min;
@@ -224,7 +225,37 @@ namespace GiftShop_DS.Utils
             InventoryMessageBroadcaster.SubscribeToQuantityOverhead(action);
         }
 
-        private bool RemovePackage(int width)
+        public bool RemovePackage(int width, int height)
+        {
+            var widthNode = new Node<WidthData>(new WidthData(width));
+            if (tree.TryGetNode(ref widthNode))
+            {
+                var heightNode = new Node<HeightData>(new HeightData(height));
+                if (widthNode.Data.HeightTree.TryGetNode(ref heightNode))
+                {
+                    widthNode.Data.HeightTree.RemoveNode(heightNode.Data);
+                    heightNode.Data.Count = 0;
+                    
+                    if (widthNode.Data.HeightTree.Count == 0)
+                    {
+                        tree.RemoveNode(data: widthNode.Data);
+                    }
+                    
+                    var pkg = new Package()
+                    {
+                        Count = 0,
+                        Width = width,
+                        Height = height
+                    };
+
+                    OnInventoryChange?.Invoke(this, new InventoryChangeEventArgs(pkg));
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool RemovePackage(int width)
         {
             var widthNode = new Node<WidthData>(new WidthData(width));
             if (tree.TryGetNode(ref widthNode))
@@ -237,7 +268,7 @@ namespace GiftShop_DS.Utils
 
         public class InventoryChangeEventArgs : EventArgs, IInventoryChangeEventArgs
         {
-            
+
             internal InventoryChangeEventArgs(Package package)
             {
                 Package = package;
@@ -248,6 +279,6 @@ namespace GiftShop_DS.Utils
                 get;
                 private set;
             }
-        }      
+        }
     }
 }

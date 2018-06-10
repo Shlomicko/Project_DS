@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace Common
 {
     public interface IStore
     {
-        Dictionary<int, Package> GetPackages();
+        ICollection<Package> GetPackages();
         bool IssuePackage(int width, int height, int quantity = 1);
         void AddPackage(int width, int height, int quantity = 1);
         int CountPackages(int width, int height);
@@ -18,6 +16,8 @@ namespace Common
         IStore SetMaximumStock(int min);
         IStore SetExpirationTime(int min);
         void Init();
+        bool RemovePackage(int width);
+        bool RemovePackage(int width, int height);
         event EventHandler<IInventoryChangeEventArgs> OnInventoryChange;
     }
     public interface IInventoryChangeEventArgs
