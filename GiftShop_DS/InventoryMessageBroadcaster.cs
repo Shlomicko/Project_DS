@@ -15,17 +15,15 @@ namespace GiftShop_DS
 
         static InventoryMessageBroadcaster() => Actions = new Dictionary<MessageType, List<Subscription>>();
 
-        private const string OverheadMessage = "After adding the provided packages we were left with {0} packages too much.\nPackage dimentions:{1}x{2}";
-        private const string TooLowMessage = "";
+        
 
-        public static void SubscribeToQuantityOverhead(Action<string, Package> action)
+        public static void SubscribeToQuantityOverhead(Action<Package> action)
         {
             if (Actions.TryGetValue(MessageType.QuantityOverhead, out List<Subscription> actionList))
             {
                 actionList.Add(new Subscription()
-                {
-                    Action = action,
-                    Message = OverheadMessage
+                {                    
+                    Action = action
                 });
             }
             else
@@ -34,22 +32,20 @@ namespace GiftShop_DS
                 {
                     new Subscription()
                     {
-                        Action = action,
-                        Message = OverheadMessage
+                        Action = action,                       
                     }
                 };
                 Actions.Add(MessageType.QuantityOverhead, actionList);
             }
         }
 
-        public static void SubscribeToQuantityToLow(Action<string, Package> action)
+        public static void SubscribeToQuantityToLow(Action<Package> action)
         {
             if (Actions.TryGetValue(MessageType.PackageQuanityLow, out List<Subscription> actionList))
             {
                 actionList.Add(new Subscription()
                 {
-                    Action = action,
-                    Message = OverheadMessage
+                    Action = action,                    
                 });
             }
             else
@@ -58,11 +54,10 @@ namespace GiftShop_DS
                 {
                     new Subscription()
                     {
-                        Action = action,
-                        Message = OverheadMessage
+                        Action = action,                        
                     }
                 };
-                Actions.Add(MessageType.QuantityOverhead, actionList);
+                Actions.Add(MessageType.PackageQuanityLow, actionList);
             }
         }
 
@@ -71,13 +66,14 @@ namespace GiftShop_DS
             if (Actions.ContainsKey(messageType))
             {
                 foreach (Subscription subscription in Actions[messageType])
-                {
-                    var msg = subscription.Message;
-                    if (numOffPackagesTooMuch > 0)
+                {                    
+                    var copy = new Package()
                     {
-                        msg = string.Format(msg, numOffPackagesTooMuch, package.Width, package.Height);
-                    }
-                    subscription.Action.Invoke(msg, package);
+                        Width = package.Width,
+                        Height = package.Height,
+                        Count = numOffPackagesTooMuch
+                    };
+                    subscription.Action.Invoke(copy);
                 }
             }
         }
@@ -88,7 +84,7 @@ namespace GiftShop_DS
 
         internal class Subscription
         {
-            public Action<string, Package> Action { get; set; }
+            public Action<Package> Action { get; set; }
             public string Message { get; set; }
         }
     }

@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="GiftDepo.Dialogs.JustKidding"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:local="clr-namespace:GiftDepo.Dialogs"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid Background="CornflowerBlue">
+
+        <GroupBox Header="Handle leftover packages"
+                              MinWidth="400" Height="Auto"
+                              materialDesign:ShadowAssist.ShadowDepth="Depth4"
+                              Style="{DynamicResource MaterialDesignCardGroupBox}" Margin="16">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <DockPanel HorizontalAlignment="Stretch">
+                        <materialDesign:PackIcon Kind="CakeLayered" Height="32" Width="32" VerticalAlignment="Center" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" 
+                                               Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}"/>
+                        <Button HorizontalAlignment="Right" Content="{materialDesign:PackIcon Kind=CloseCircle}" 
+                                materialDesign:ShadowAssist.ShadowDepth="Depth0" Margin="0" 
+                                Command="materialDesign:DialogHost.CloseDialogCommand"
+                                />
+                    </DockPanel>
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Width="Auto" DockPanel.Dock="Left" Orientation="Vertical"
+                                                VerticalAlignment="Top" Margin="10">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 8">
+                        <ToggleButton Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}" IsChecked="False">
+                            <materialDesign:PackIcon Kind="Heart" Height="21" Width="21"/>
+                        </ToggleButton>
+                        <TextBlock Text="Donate to charity" Margin="10 0" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 8">
+                        <ToggleButton Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}" IsChecked="False">
+                            <materialDesign:PackIcon Kind="Heart" Height="21" Width="21"/>
+                        </ToggleButton>
+                        <TextBlock Text="Build the new Trump tower" Margin="10 0" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 8">
+                        <ToggleButton Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}" IsChecked="False">
+                            <materialDesign:PackIcon Kind="Heart" Height="21" Width="21"/>
+                        </ToggleButton>
+                        <TextBlock Text="Make paper mache" Margin="10 0" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 8">
+                        <ToggleButton Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}" IsChecked="False">
+                            <materialDesign:PackIcon Kind="Heart" Height="21" Width="21" VerticalAlignment="Center"/>
+                        </ToggleButton>
+                        <TextBlock Text="Save for לג בעומר" Margin="10 0" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                </StackPanel>
+                <StackPanel Grid.Row="1" DockPanel.Dock="Bottom" Orientation="Horizontal"
+                            VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10" >
+
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" 
+                            Command="materialDesign:DialogHost.CloseDialogCommand"
+                            Content="Ok!"/>
+                </StackPanel>
+
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

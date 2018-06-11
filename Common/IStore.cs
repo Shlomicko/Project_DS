@@ -6,12 +6,12 @@ namespace Common
 {
     public interface IStore
     {
-        ICollection<Package> GetPackages();
+        List<Package> GetPackages();
         bool IssuePackage(int width, int height, int quantity = 1);
         void AddPackage(int width, int height, int quantity = 1);
         int CountPackages(int width, int height);
-        void SubscribeToAlertLowQuantityMessages(Action<string, Package> action);
-        void SubscribeToQuantityOverheadMessages(Action<string, Package> action);
+        void SubscribeToAlertLowQuantityMessages(Action<Package> action);
+        void SubscribeToQuantityOverheadMessages(Action<Package> action);
         IStore SetMinimumStock(int min);
         IStore SetMaximumStock(int min);
         IStore SetExpirationTime(int min);

@@ -3,13 +3,13 @@
 namespace GiftDepo.Model
 {
     public class PackageFormValitationModel : BaseViewModel
-    {        
+    {
         private int _width;
         private int _height;
         private bool _hasNoErrors = false;
         private int _quantity = 1;
+        private bool _needsRestock;
 
-        
         public int Width
         {
             get
@@ -73,5 +73,23 @@ namespace GiftDepo.Model
                 }
             }
         }
+
+        public bool NeedsRestock
+        {
+            get
+            {
+                return _needsRestock;
+            }
+            set
+            {
+                if (_needsRestock != value)
+                {
+                    _needsRestock = value;
+                    RaisePropertyChanged("NeedsRestock");
+                }
+            }
+        }
+
+
     }
 }

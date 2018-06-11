@@ -8,12 +8,12 @@ namespace GiftDepo.Model
 {
     public class InventoryModel : BaseViewModel
     {
-        private ObservableCollection<Package> _packages;
-        public event EventHandler<ObservableCollection<Package>> OnDataRefresh;
+        private List<Package> _packages;
+        public event EventHandler<List<Package>> OnDataRefresh;
 
         public InventoryModel(IStore store)
         {
-            _packages = new ObservableCollection<Package>(store.GetPackages());            
+            _packages = store.GetPackages();            
             store.OnInventoryChange += Store_OnInventoryChange;
         }
 
@@ -28,15 +28,14 @@ namespace GiftDepo.Model
                 }
                 else
                 {
-                    Copy(e.Package, package);
-                    OnDataRefresh?.Invoke(this, _packages);
+                    Copy(e.Package, package);                    
                 }
             }
             else
             {
                 _packages.Add(new Package(e.Package.Width, e.Package.Height, e.Package.DateAdded, e.Package.Count));                
             }
-            Packages = _packages;
+            OnDataRefresh?.Invoke(this, _packages);
         }
         private bool TryGetPackage(int width, int height, out Package package)
         {
@@ -72,7 +71,7 @@ namespace GiftDepo.Model
             to.Count = from.Count;
             to.DateAdded = from.DateAdded;
         }
-        public ObservableCollection<Package> Packages
+        public List<Package> Packages
         {
             get
             {

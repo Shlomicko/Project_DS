@@ -3,10 +3,117 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:GiftDepo.Pages"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.Green.Named.Primary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Margin="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="1" Margin="24 0 0 0" VerticalAlignment="Center">
+                <TextBlock Style="{StaticResource MaterialDesignDisplay1TextBlock}" Foreground="Black"
+                           TextWrapping="Wrap">Welcome to Data Structure Project, Class 927</TextBlock>
+                <Button Style="{StaticResource MaterialDesignFlatButton}" Click="Button_Click" >
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Visualstudio" />
+                        <TextBlock Margin="8 0 0 0">Start</TextBlock>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="0 0 0 8">
+            <Grid>
+                <materialDesign:Card Width="Auto" Margin="18" Height="400" materialDesign:ShadowAssist.ShadowDepth="Depth4">
+                    <Grid VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <FlowDocumentScrollViewer Focusable="False" IsToolBarVisible="False" Grid.Column="0" Grid.Row="1"
+                                                  Grid.ColumnSpan="2"
+                                                  ScrollViewer.CanContentScroll="False" 
+                                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                                                  ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+                                                  HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                            <FlowDocumentScrollViewer.Document>
+                                <FlowDocument>
+
+                                    <Paragraph FontWeight="Normal" Foreground="Black" TextAlignment="Left">
+
+                                        <Floater Width="110" HorizontalAlignment="Left" Margin="0,0,4,0" Padding="10">
+
+                                            <BlockUIContainer>
+
+                                                <Image Source="../Assets/data-structure.png"
+                                               RenderOptions.BitmapScalingMode="HighQuality" 
+                                               Stretch="Uniform" Width="100" Height="100" />
+
+                                            </BlockUIContainer>
+                                        </Floater>
+
+                                        <Run Foreground="Black" FontSize="18">
+                                            In computer science, binary search trees (BST), sometimes called ordered or sorted binary trees, are a particular type of container: data structures that store "items" (such as numbers, names etc.) in memory. They allow fast lookup, addition and removal of items, and can be used to implement either dynamic sets of items, or lookup tables that allow finding an item by its key (e.g., finding the phone number of a person by name).
+Binary search trees keep their keys in sorted order, so that lookup and other operations can use the principle of binary search: when looking for a key in a tree (or a place to insert a new key), they traverse the tree from root to leaf, making comparisons to keys stored in the nodes of the tree and deciding, on the basis of the comparison, to continue searching in the left or right subtrees. On average, this means that each comparison allows the operations to skip about half of the tree, so that each lookup, insertion or deletion takes time proportional to the logarithm of the number of items stored in the tree. This is much better than the linear time required to find items by key in an (unsorted) array, but slower than the corresponding operations on hash tables.
+Several variants of the binary search tree have been studied in computer science; this article deals primarily with the basic type, making references to more advanced types when appropriate.
+                                        </Run>
+                                    </Paragraph>
+
+                                </FlowDocument>
+                            </FlowDocumentScrollViewer.Document>
+                        </FlowDocumentScrollViewer>
+
+
+                        <TextBlock Style="{StaticResource MaterialDesignHeadlineTextBlock}" Foreground="Black" 
+                                   Margin="16 16 16 8">Binary Search Tree - BTS</TextBlock>
+
+
+                        <Border Grid.Column="1" Grid.Row="1" BorderThickness="0" 
+                                VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                                BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="0 8 0 0">
+                            <Grid Margin="8">
+                                <Button Style="{DynamicResource MaterialDesignFlatButton}" HorizontalAlignment="Left"
+                                            x:Name="WikiButton" Click="WikiButton_Click">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <materialDesign:PackIcon Kind="Web" />
+                                        <TextBlock Margin="6 -3 0 0" VerticalAlignment="Center">More...</TextBlock>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </materialDesign:Card>
+
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

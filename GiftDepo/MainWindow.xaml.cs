@@ -5,10 +5,14 @@ using GiftDepo.Model;
 using GiftDepo.Pages;
 using GiftShop_DS.Utils;
 using MaterialDesignThemes.Wpf;
+using System.Collections.Specialized;
 using System.Configuration;
+using System.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace GiftDepo
 {
@@ -17,40 +21,69 @@ namespace GiftDepo
     /// </summary>
     public partial class MainWindow : Window
     {
-        private IStore _StoreManager;
+        public IStore StoreManager { get; private set; }
         public ICommand RunExtendedDialogCommand => new ApplicationCommand(ExecuteRunExtendedDialog);
+
+        public readonly NameValueCollection AppSettings = ConfigurationManager.AppSettings;
+
+        public readonly int MaximumPackageQuantity;
+        public readonly int MinimumPackageQuantity;
+        public readonly int ExpiretionThreshHoldInMilliseconds;
+        private const string OverheadMessage = "There are {0} packages too much. Package dimentions:{1}x{2}";
+        private const string TooLowMessage = "We are running low of {0} packages.";
         public MainWindow()
         {
             InitializeComponent();
-            _StoreManager = StorageManager.Instance;
-            Config();
-            DataContext = this;
-        }
-
-        private void Config()
-        {
-            var appSettings = ConfigurationManager.AppSettings;
-
-            if (!int.TryParse(appSettings.Get("MaximumPackageQuantity"), out int MaximumPackageQuantity))
+            StoreManager = StorageManager.Instance;
+            if (!int.TryParse(AppSettings.Get("MaximumPackageQuantity"), out MaximumPackageQuantity))
             {
                 MaximumPackageQuantity = 100;
             }
 
-            if (!int.TryParse(appSettings.Get("MinimumPackageQuantity"), out int MinimumPackageQuantity))
+            if (!int.TryParse(AppSettings.Get("MinimumPackageQuantity"), out MinimumPackageQuantity))
             {
                 MinimumPackageQuantity = 5;
             }
 
-            if (!int.TryParse(appSettings.Get("ExpiretionThreshHoldInMilliseconds"),
-                out int ExpiretionThreshHoldInMilliseconds))
+            if (!int.TryParse(AppSettings.Get("ExpiretionThreshHoldInMilliseconds"),
+                out ExpiretionThreshHoldInMilliseconds))
             {
                 ExpiretionThreshHoldInMilliseconds = 10000;
             }
 
-            _StoreManager.SetMinimumStock(MinimumPackageQuantity)
+            DataContext = this;
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            StoreManager.SetMinimumStock(MinimumPackageQuantity)
                          .SetMaximumStock(MaximumPackageQuantity)
                          .SetExpirationTime(ExpiretionThreshHoldInMilliseconds)
                          .Init();
+
+            MainSnackbar.MessageQueue = new SnackbarMessageQueue(new System.TimeSpan(0, 0, 8));
+
+            StoreManager.SubscribeToAlertLowQuantityMessages(package =>
+            {
+                string message = string.Format(TooLowMessage, package.ToStringNoDate());
+                int restock = MaximumPackageQuantity - package.Count;
+                MainSnackbar.MessageQueue.Enqueue(message, "Restock", () =>
+                {
+                    StoreManager.AddPackage(package.Width, package.Height, restock);
+                });
+            });
+
+            StoreManager.SubscribeToQuantityOverheadMessages(package =>
+            {
+                int change = package.Count;
+                string message = string.Format(OverheadMessage, change, package.Width, package.Height);
+
+                MainSnackbar.MessageQueue.Enqueue(message, "Take action", () =>
+                {
+                    DialogHost.Show(new JustKidding());
+                });
+            });
         }
 
         private void StackPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -59,6 +92,28 @@ namespace GiftDepo
             switch (btn.Tag)
             {
                 case "about":
+                    AddPackageButton.Visibility = Visibility.Collapsed;
+                    PageContainer.Content = new AboutPage();
+                    break;
+                case "help":
+                    System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                    string[] names = GetType().Assembly.GetManifestResourceNames();
+                    System.IO.Stream helpBeatles = assembly.GetManifestResourceStream("GiftDepo.Assets.Beatles_help.wav");
+                    System.IO.Stream bg = assembly.GetManifestResourceStream("GiftDepo.Assets.beatles.jpg");
+
+                    var player = new SoundPlayer(helpBeatles);
+                    var bmp = new BitmapImage();
+                    bmp.BeginInit();
+                    bmp.StreamSource = bg;
+                    bmp.EndInit();
+                    var img = new Image
+                    {
+                        Source = bmp
+                    };
+
+                    PageContainer.Content = img;                   
+                    player.Play();
+                    
                     break;
                 case "exit":
                     Application.Current.Shutdown();
@@ -70,15 +125,16 @@ namespace GiftDepo
         {
             LeftNav.IsLeftDrawerOpen = false;
             ListViewItem item = (e.Source as ListView).SelectedItem as ListViewItem;
-            switch (item.Name)
+            AddPackageButton.Visibility = Visibility.Visible;
+            switch (item.Tag)
             {
-                case "ItemManage":
-                    PageContainer.Content = new InventoryPage(_StoreManager);
+                case "item_manage":
+                    PageContainer.Content = new InventoryPage(StoreManager);
                     break;
-                case "ItemIssuePackage":                                       
-                    PageContainer.Content = new IssuePackagePage(_StoreManager);
+                case "item_issue_package":
+                    PageContainer.Content = new IssuePackagePage(StoreManager);
                     break;
-            }             
+            }
         }
 
         private async void ExecuteRunExtendedDialog(object o)
@@ -101,7 +157,7 @@ namespace GiftDepo
 
             if (eventArgs.Parameter is PackageFormValitationModel model)
             {
-                _StoreManager.AddPackage(model.Width, model.Height, model.Quantity);
+                StoreManager.AddPackage(model.Width, model.Height, model.Quantity);
             }
         }
     }

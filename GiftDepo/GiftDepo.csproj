@@ -62,6 +62,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\ApplicationCommand.cs" />
+    <Compile Include="Dialogs\JustKidding.xaml.cs">
+      <DependentUpon>JustKidding.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\ManagePackageControl.xaml.cs">
       <DependentUpon>ManagePackageControl.xaml</DependentUpon>
     </Compile>
@@ -74,6 +77,10 @@
       <DependentUpon>IssuePackagePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Validators\NotEmptyValidationRule.cs" />
+    <Page Include="Dialogs\JustKidding.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\ManagePackageControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -152,6 +159,19 @@
       <Project>{fb499a14-99aa-4707-bb20-5181bc382d07}</Project>
       <Name>GiftShop_DS</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\data-structure.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Beatles_help.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\beatles.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

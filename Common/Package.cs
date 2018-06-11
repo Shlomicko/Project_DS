@@ -34,5 +34,6 @@ namespace Common
         public int Count { get; set; } = 1;
 
         public override string ToString() => $"Package, {Width}x{Height}, Quantity:{Count}, Date added:{DateAdded}";
+        public string ToStringNoDate() => $"Package, {Width}x{Height}, Quantity:{Count}";
     }
 }

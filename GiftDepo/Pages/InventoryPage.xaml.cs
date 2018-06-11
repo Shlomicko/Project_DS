@@ -33,26 +33,35 @@ namespace GiftDepo.Pages
             _store = store;
             _model = new InventoryModel(store);
             _model.OnDataRefresh += OnDataRefresh;
-            this.DataContext = _model;            
+            this.DataContext = _model;
         }
 
-        private void OnDataRefresh(object sender, System.Collections.ObjectModel.ObservableCollection<Package> e)
+
+        private void OnDataRefresh(object sender, List<Package> e)
         {
-            PackagesGridView.ItemsSource = null;
-            PackagesGridView.ItemsSource = e;
+            this.Dispatcher.Invoke(() =>
+            {
+                PackagesGridView.ItemsSource = null;
+                PackagesGridView.ItemsSource = e;
+            });
+
         }
 
-        
+
         private void OnClickToManagePackage(object sender, RoutedEventArgs e)
         {
             var btn = ((Button)sender);
             var data = btn.DataContext as Package;
+            MainWindow mn = (MainWindow)Application.Current.MainWindow;
+            
             var view = new ManagePackageControl(_store)
             {
                 DataContext = new PackageFormValitationModel()
                 {
                     Width = data.Width,
-                    Height = data.Height
+                    Height = data.Height,
+                    Quantity = data.Count,
+                    NeedsRestock = data.Count < mn.MaximumPackageQuantity
                 }
             };
 

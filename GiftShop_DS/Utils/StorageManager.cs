@@ -38,7 +38,7 @@ namespace GiftShop_DS.Utils
             tree = new TreeWithSubTrees<WidthData>();
             _storeQueue = new StoreQueue();
 
-            SetJob();
+            //SetJob();
         }
 
         private void SetJob()
@@ -58,12 +58,20 @@ namespace GiftShop_DS.Utils
             var parentTree = dq.ParentTree;
             parentTree.RemoveNode(dq.Data);
             var hCount = parentTree.Count;
+            var width = dq.BaseNode.Data.Width;
+            var height = dq.Data.Height;
             if (hCount == 0)
-            {
-                var width = dq.BaseNode.Data.Width;
-                var height = dq.Data.Height;
+            {                
                 RemovePackage(width);
             }
+            var pkg = new Package()
+            {
+                Count = 0,
+                Width = width,
+                Height = height
+            };           
+
+            OnInventoryChange?.Invoke(this, new InventoryChangeEventArgs(pkg));
             _jobRunner.Start();            
         }
 
@@ -171,7 +179,7 @@ namespace GiftShop_DS.Utils
             return 0;
         }
 
-        public ICollection<Package> GetPackages()
+        public List<Package> GetPackages()
         {
             List<Package> packages = new List<Package>();
             var bases = tree.Inorder();
@@ -189,7 +197,7 @@ namespace GiftShop_DS.Utils
                             DateAdded = heightItem.InsertionDate,
                             Count = heightItem.Count
                         };
-                        if (!packages.Contains(package))
+                        if (!ContainsPackage(packages, package))
                         {
                             packages.Add(package);
                         }
@@ -197,6 +205,11 @@ namespace GiftShop_DS.Utils
                 }
             }
             return packages;
+        }
+
+        private bool ContainsPackage(List<Package> list, Package package)
+        {
+            return list.Exists(item => item.Width == package.Width && item.Height == package.Height);
         }
 
         public IStore SetMinimumStock(int min)
@@ -215,12 +228,12 @@ namespace GiftShop_DS.Utils
             return this;
         }
 
-        public void SubscribeToAlertLowQuantityMessages(Action<string, Package> action)
+        public void SubscribeToAlertLowQuantityMessages(Action<Package> action)
         {
             InventoryMessageBroadcaster.SubscribeToQuantityToLow(action);
         }
 
-        public void SubscribeToQuantityOverheadMessages(Action<string, Package> action)
+        public void SubscribeToQuantityOverheadMessages(Action<Package> action)
         {
             InventoryMessageBroadcaster.SubscribeToQuantityOverhead(action);
         }

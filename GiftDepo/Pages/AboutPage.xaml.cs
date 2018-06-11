@@ -24,5 +24,15 @@ namespace GiftDepo.Pages
         {
             InitializeComponent();
         }
+
+        private void WikiButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://en.wikipedia.org/wiki/Binary_search_tree");
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ((MainWindow)Application.Current.MainWindow).LeftNav.IsLeftDrawerOpen = true;
+        }
     }
 }

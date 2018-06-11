@@ -41,12 +41,10 @@
                                Foreground="Black" Text="{Binding Height, StringFormat='Height: {0}'}"/>
 
                     <TextBox x:Name="QuantityTextBox" materialDesign:HintAssist.Hint="Quantity" Margin="0 25 0 0"
-                              Foreground="Black"
+                              Foreground="Black" IsEnabled="{Binding NeedsRestock}"
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}">
                         <TextBox.Text>
-                            <Binding Path="Quantity" 
-                                                         NotifyOnValidationError="True"
-                                                         UpdateSourceTrigger="PropertyChanged">
+                            <Binding Path="Quantity" NotifyOnValidationError="True" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
                                     <validators:NotEmptyValidationRule ValidatesOnTargetUpdated="True"/>
                                 </Binding.ValidationRules>
@@ -54,9 +52,10 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Grid.Row="1" DockPanel.Dock="Bottom" Orientation="Horizontal" 
+                <StackPanel Grid.Row="1" DockPanel.Dock="Bottom" Orientation="Horizontal"
                             VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10" >
-                    <Button Style="{StaticResource MaterialDesignFlatButton}" Click="OnAddAmount" Command="materialDesign:DialogHost.CloseDialogCommand">
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" IsEnabled="{Binding NeedsRestock}" 
+                            Click="OnAddAmount" Command="materialDesign:DialogHost.CloseDialogCommand">
                         <Button.Content>
                             <TextBlock Text="{Binding Quantity, StringFormat='Add {0} Packages'}"/>
                         </Button.Content>

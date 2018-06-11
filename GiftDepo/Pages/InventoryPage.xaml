@@ -20,11 +20,10 @@
 
                 <materialDesign:MaterialDataGridTextColumn Binding="{Binding Width}" Header="Base" 
                                                        />
-                <!-- set a max length to get an indicator in the editor -->
                 <materialDesign:MaterialDataGridTextColumn Binding="{Binding Height}" Header="Height" 
                                                        MaxLength="255" />
                 <materialDesign:MaterialDataGridTextColumn Binding="{Binding Count}" Header="Quantity"/>
-                <!-- use custom combo box column to get better combos. Use ItemsSourceBinding as your binding template to be applied to each combo -->
+                
                 <materialDesign:MaterialDataGridTextColumn Header="Date Added" Binding="{Binding DateAdded, StringFormat=d}" 
                                                        SortMemberPath="DateAdded"/>
                 <DataGridTemplateColumn>
