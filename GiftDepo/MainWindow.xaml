@@ -42,11 +42,10 @@
                                   HorizontalAlignment="Left" Margin="16"
                                   Foreground="White"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBlock Text="Configurations" VerticalAlignment="Center" FontSize="16"/>
+                        
                         <materialDesign:PopupBox PlacementMode="BottomAndAlignRightEdges"                                          
                                          StaysOpen="False" Margin="10">
                             <StackPanel Width="150" PreviewMouseUp="StackPanel_PreviewMouseLeftButtonUp">
-                                <Button Content="Notifications" Tag="notification"/>
                                 <Button Content="About" Tag="about"/>
                                 <Button Content="Help" Tag="help"/>
                                 <Separator/>

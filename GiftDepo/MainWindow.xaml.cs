@@ -89,10 +89,10 @@ namespace GiftDepo
         private void StackPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Button btn = e.Source as Button;
+            AddPackageButton.Visibility = Visibility.Collapsed;
             switch (btn.Tag)
             {
-                case "about":
-                    AddPackageButton.Visibility = Visibility.Collapsed;
+                case "about":                    
                     PageContainer.Content = new AboutPage();
                     break;
                 case "help":
